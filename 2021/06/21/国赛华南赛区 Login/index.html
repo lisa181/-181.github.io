@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"-181.github.io","root":"/","scheme":"Pisces","version":"8.0.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+
+  <meta name="description" content="国赛华南赛区-Login打开是一个登录框  点击忘记密码，进入重置密码页面，查看页面源代码  发现有一个js代码 http:&#x2F;&#x2F;172.35.29.15&#x2F;static&#x2F;reset.js 123456789101112131415function initReset()&amp;#123;   var _0x1ec24d&#x3D;_0x4c63;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="国赛华南赛区-Login">
+<meta property="og:url" content="https://-181.github.io/2021/06/21/%E5%9B%BD%E8%B5%9B%E5%8D%8E%E5%8D%97%E8%B5%9B%E5%8C%BA%20Login/index.html">
+<meta property="og:site_name" content="左">
+<meta property="og:description" content="国赛华南赛区-Login打开是一个登录框  点击忘记密码，进入重置密码页面，查看页面源代码  发现有一个js代码 http:&#x2F;&#x2F;172.35.29.15&#x2F;static&#x2F;reset.js 123456789101112131415function initReset()&amp;#123;   var _0x1ec24d&#x3D;_0x4c63;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/chen-lishan/tuc/raw/master/login1.png">
+<meta property="og:image" content="https://gitee.com/chen-lishan/tuc/raw/master/login2.png">
+<meta property="og:image" content="https://gitee.com/chen-lishan/tuc/raw/master/login3.png">
+<meta property="og:image" content="https://gitee.com/chen-lishan/tuc/raw/master/login4.png">
+<meta property="og:image" content="https://gitee.com/chen-lishan/tuc/raw/master/login5.png">
+<meta property="article:published_time" content="2021-06-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-19T11:12:37.302Z">
+<meta property="article:author" content="左">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/chen-lishan/tuc/raw/master/login1.png">
+
+
+<link rel="canonical" href="https://-181.github.io/2021/06/21/%E5%9B%BD%E8%B5%9B%E5%8D%8E%E5%8D%97%E8%B5%9B%E5%8C%BA%20Login/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>国赛华南赛区-Login | 左</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">左</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">春有百花秋有月， 夏有凉风冬有雪</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BD%E8%B5%9B%E5%8D%8E%E5%8D%97%E8%B5%9B%E5%8C%BA-Login"><span class="nav-number">1.</span> <span class="nav-text">国赛华南赛区-Login</span></a></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="左"
+      src="/image/avatar.jpg">
+  <p class="site-author-name" itemprop="name">左</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </section>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://-181.github.io/2021/06/21/%E5%9B%BD%E8%B5%9B%E5%8D%8E%E5%8D%97%E8%B5%9B%E5%8C%BA%20Login/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/avatar.jpg">
+      <meta itemprop="name" content="左">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="左">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          国赛华南赛区-Login
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-21 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-21T00:00:00+08:00">2021-06-21</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-19 19:12:37" itemprop="dateModified" datetime="2021-07-19T19:12:37+08:00">2021-07-19</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="国赛华南赛区-Login"><a href="#国赛华南赛区-Login" class="headerlink" title="国赛华南赛区-Login"></a>国赛华南赛区-Login</h2><p>打开是一个登录框</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/login1.png"></p>
+<p>点击忘记密码，进入重置密码页面，查看页面源代码</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/login2.png"></p>
+<p>发现有一个js代码</p>
+<p><a target="_blank" rel="noopener" href="http://172.35.29.15/static/reset.js">http://172.35.29.15/static/reset.js</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">initReset</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">  <span class="keyword">var</span> _0x1ec24d=_0x4c63;                                   <span class="comment">//语句1</span></span><br><span class="line">  $(_0x1ec24d(<span class="number">0x16e</span>))[_0x1ec24d(<span class="number">0x17d</span>)](<span class="function"><span class="keyword">function</span>(<span class="params">_0x14125e</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> _0x40984e=_0x1ec24d;                             <span class="comment">//语句2 </span></span><br><span class="line">      let _0x4e6bb8=&#123;&#125;;</span><br><span class="line">    _0x4e6bb8[_0x40984e(<span class="number">0x186</span>)]=$[_0x40984e(<span class="number">0x160</span>)]($(<span class="string">&#x27;#account&#x27;</span>)[_0x40984e(<span class="number">0x17a</span>)]()),_0x4e6bb8[_0x40984e(<span class="number">0x16c</span>)]=$[_0x40984e(<span class="number">0x160</span>)]($(_0x40984e(<span class="number">0x174</span>))[_0x40984e(<span class="number">0x17a</span>)]()),_0x4e6bb8[_0x40984e(<span class="number">0x183</span>)]=$[_0x40984e(<span class="number">0x160</span>)]($(_0x40984e(<span class="number">0x177</span>))[<span class="string">&#x27;val&#x27;</span>]()),_0x14125e[_0x40984e(<span class="number">0x176</span>)](),$[_0x40984e(<span class="number">0x175</span>)](&#123;<span class="string">&#x27;url&#x27;</span>:_0x40984e(<span class="number">0x187</span>),<span class="string">&#x27;type&#x27;</span>:_0x40984e(<span class="number">0x16d</span>),<span class="string">&#x27;data&#x27;</span>:_0x4e6bb8,<span class="string">&#x27;success&#x27;</span>:</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">_0x5e89aa</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> _0x1ea9ce=_0x40984e;                             <span class="comment">//语句3</span></span><br><span class="line">      <span class="keyword">if</span>(_0x5e89aa[_0x1ea9ce(<span class="number">0x181</span>)]==!![]&amp;&amp;_0x5e89aa[<span class="string">&#x27;code&#x27;</span>]==_0x1ea9ce(<span class="number">0x17c</span>))</span><br><span class="line">       setCookie(<span class="string">&#x27;user&#x27;</span>,_0x5e89aa[<span class="string">&#x27;user&#x27;</span>]);</span><br><span class="line">      <span class="keyword">else</span> _0x5e89aa[_0x1ea9ce(<span class="number">0x181</span>)]==!![]&amp;&amp;_0x5e89aa[<span class="string">&#x27;code&#x27;</span>]==_0x1ea9ce(<span class="number">0x172</span>)?(setCookie(_0x1ea9ce(<span class="number">0x16a</span>),_0x1ea9ce(<span class="number">0x165</span>)),confirm(<span class="string">&#x27;you\x20are\x20super,\x20change\x20it\x20again!&#x27;</span>)&amp;&amp;(window[<span class="string">&#x27;location&#x27;</span>]=_0x1ea9ce(<span class="number">0x163</span>))):       <span class="comment">//语句4：setCookie</span></span><br><span class="line">        alert(_0x1ea9ce(<span class="number">0x184</span>));</span><br></pre></td></tr></table></figure>
+
+<p><code>initReset()</code>里面有个<code>setCookie(_0x1ea9ce(0x16a),_0x1ea9ce(0x165))</code>,<code>confirm(&#39;you\x20are\x20super,\x20change\x20it\x20again!&#39;)&amp;&amp;(window[&#39;location&#39;]=_0x1ea9ce(0x163)))</code></p>
+<p>直接怼到浏览器控制台里运行，可以得到这个cookie的值</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/login3.png"></p>
+<p>用这个cookie去重置密码</p>
+<p>账号只能用admin</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/login4.png"></p>
+<p>提交抓包</p>
+<p>在Cookie语句后面加上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">;isSuperadmin&#x3D;i3uperAdmin</span><br><span class="line">X-Forwarded-For: 127.0.0.1</span><br><span class="line">X-Originating-IP: 127.0.0.1</span><br><span class="line">X-Remote-IP: 127.0.0.1</span><br><span class="line">X-Remote-Addr: 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/login5.png"></p>
+<p>登录账号密码，即可得到flag</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/16/smarty%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/" rel="prev" title="Smarty模板注入漏洞">
+                  <i class="fa fa-chevron-left"></i> Smarty模板注入漏洞
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/13/Unicode%E6%AC%BA%E9%AA%97/" rel="next" title="Unicode欺骗">
+                  Unicode欺骗 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">左</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
